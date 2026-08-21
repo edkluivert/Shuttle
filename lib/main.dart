@@ -9,11 +9,11 @@ import 'package:shuttle/features/appearance/presentation/bloc/appearance_cubit.d
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await configureDependencies();
-  runApp(const LocalFileTransferApp());
+  runApp(const ShuttleApp());
 }
 
-class LocalFileTransferApp extends StatelessWidget {
-  const LocalFileTransferApp({super.key});
+class ShuttleApp extends StatelessWidget {
+  const ShuttleApp({super.key});
 
   @override
   Widget build(BuildContext context) {
