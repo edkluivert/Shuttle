@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Off for the same reason as DebugProfile.entitlements: the helper
+	     binaries this app drives (adb, libmtp) live outside the container and
+	     need USB access. See that file for the measurements. -->
+	<key>com.apple.security.app-sandbox</key>
+	<false/>
+	<key>com.apple.security.device.usb</key>
+	<true/>
+	<key>com.apple.security.network.server</key>
+	<true/>
+	<!-- Received files go to ~/Downloads, which the sandbox does not grant by
+	     default: without this every upload failed with a 500 and the folder
+	     was never even created. -->
+	<key>com.apple.security.files.downloads.read-write</key>
+	<true/>
+	<!-- Files the user picks to share are read through the open panel. -->
+	<key>com.apple.security.files.user-selected.read-only</key>
+	<true/>
+	<key>com.apple.security.network.client</key>
+	<true/>
+	<key>com.apple.security.local-network.client</key>
+	<true/>
+	<key>com.apple.security.local-network.server</key>
+	<true/>
+</dict>
+</plist>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!--
+	  The sandbox is off, deliberately.
+
+	  This app drives helper binaries that live outside its container — adb in
+	  ~/Library/Android/sdk and libmtp in /usr/local/bin — and libmtp needs raw
+	  USB device access. Measured with the sandbox on: adb was unreachable
+	  (`available=false` from the app, while working fine in a terminal) and
+	  mtp-detect found no device.
+
+	  Sandboxing cannot be made to work here even with temporary-exception
+	  entitlements, because the helper paths differ per machine. This is a
+	  local utility, not a Mac App Store app; App Store distribution would rule
+	  out USB tooling entirely regardless.
+	-->
+	<key>com.apple.security.app-sandbox</key>
+	<false/>
+	<key>com.apple.security.cs.allow-jit</key>
+	<true/>
+	<!-- Still declared: they cost nothing and document the intent, and they
+	     matter again the moment anyone turns the sandbox back on. -->
+	<key>com.apple.security.device.usb</key>
+	<true/>
+	<key>com.apple.security.network.server</key>
+	<true/>
+	<!-- Received files go to ~/Downloads, which the sandbox does not grant by
+	     default: without this every upload failed with a 500 and the folder
+	     was never even created. -->
+	<key>com.apple.security.files.downloads.read-write</key>
+	<true/>
+	<!-- Files the user picks to share are read through the open panel. -->
+	<key>com.apple.security.files.user-selected.read-only</key>
+	<true/>
+	<key>com.apple.security.network.client</key>
+	<true/>
+	<key>com.apple.security.local-network.client</key>
+	<true/>
+	<key>com.apple.security.local-network.server</key>
+	<true/>
+</dict>
+</plist>

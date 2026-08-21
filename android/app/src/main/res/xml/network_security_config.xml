@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Transfers are plain HTTP between two devices on the same LAN, which Android
+  blocks by default from API 28 on. Rather than turning cleartext on
+  everywhere with usesCleartextTraffic, it is allowed only for private
+  address ranges and .local names — the only places this app ever connects to.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false" />
+
+    <domain-config cleartextTrafficPermitted="true">
+        <!-- RFC 1918 private ranges, written as the prefixes Android matches
+             on, plus link-local and mDNS names. -->
+        <domain includeSubdomains="true">localhost</domain>
+        <domain includeSubdomains="true">local</domain>
+        <domain includeSubdomains="true">10.0.0.0/8</domain>
+        <domain includeSubdomains="true">172.16.0.0/12</domain>
+        <domain includeSubdomains="true">192.168.0.0/16</domain>
+        <domain includeSubdomains="true">169.254.0.0/16</domain>
+    </domain-config>
+</network-security-config>
