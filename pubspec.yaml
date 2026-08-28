@@ -55,6 +55,10 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
+  # NOTE: the msix packaging tool is NOT a dependency here — msix 3.17+ needs
+  # get_it ^9 and this app uses get_it ^8. The CI workflow installs msix as a
+  # standalone global tool instead (its own deps, no conflict), and it still
+  # reads the msix_config below.
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -97,3 +101,16 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+# ── MSIX installer configuration ──────────────────────────────────────────────
+# Used by `dart run msix:create` (Windows only). For a build you hand to someone
+# outside the Microsoft Store, the default self-signed test certificate is used.
+# Bump msix_version (4 parts) each release.
+msix_config:
+  display_name: Shuttle
+  publisher_display_name: Shuttle
+  identity_name: com.shuttle.app
+  msix_version: 1.0.0.0
+  # logo_path expects a PNG; add one (e.g. a 256x256 png) and point here to
+  # brand the installer. Omitted for now so packaging can't fail on the .ico.
+  capabilities: internetClient

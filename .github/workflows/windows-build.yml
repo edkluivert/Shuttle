@@ -1,0 +1,59 @@
+# Builds the Windows app on a real Windows machine (GitHub-hosted runner) and
+# uploads two downloadable artifacts:
+#   • shuttle-windows-portable.zip — the raw Release folder; the recipient just
+#     unzips and double-clicks shuttle.exe. No install, no certificate.
+#   • shuttle-msix — the .msix installer produced by the msix package.
+#
+# Run it: push this file, then GitHub → Actions → "Windows build" → Run workflow
+# (or it runs automatically on every push). Download the artifacts from the run.
+name: Windows build
+
+on:
+  workflow_dispatch: {}     # lets you trigger it manually from the Actions tab
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Fetch dependencies
+        run: flutter pub get
+
+      - name: Build Windows (release)
+        run: flutter build windows --release
+
+      # Portable zip: the whole Release folder (exe + DLLs + data/). This is the
+      # zero-friction option to hand to someone — unzip and run.
+      - name: Zip the portable build
+        run: Compress-Archive -Path build\windows\x64\runner\Release\* -DestinationPath shuttle-windows-portable.zip
+        shell: pwsh
+
+      - name: Upload portable zip
+        uses: actions/upload-artifact@v4
+        with:
+          name: shuttle-windows-portable
+          path: shuttle-windows-portable.zip
+
+      # MSIX installer (self-signed test certificate by default). msix is
+      # installed as a global tool so its get_it ^9 requirement never clashes
+      # with the app's get_it ^8. It still reads msix_config from pubspec.yaml.
+      - name: Install msix tool
+        run: dart pub global activate msix
+
+      - name: Create MSIX installer
+        run: dart pub global run msix:create
+
+      - name: Upload MSIX
+        uses: actions/upload-artifact@v4
+        with:
+          name: shuttle-msix
+          path: build\windows\x64\runner\Release\*.msix
