@@ -31,17 +31,14 @@ jobs:
       - name: Build Windows (release)
         run: flutter build windows --release
 
-      # Portable zip: the whole Release folder (exe + DLLs + data/). This is the
-      # zero-friction option to hand to someone — unzip and run.
-      - name: Zip the portable build
-        run: Compress-Archive -Path build\windows\x64\runner\Release\* -DestinationPath shuttle-windows-portable.zip
-        shell: pwsh
-
-      - name: Upload portable zip
+      # Portable build: the whole Release folder (shuttle.exe + DLLs + data/).
+      # GitHub delivers it as one zip; the recipient unzips once and runs
+      # shuttle.exe. Zero install, no certificate.
+      - name: Upload portable build
         uses: actions/upload-artifact@v4
         with:
           name: shuttle-windows-portable
-          path: shuttle-windows-portable.zip
+          path: build/windows/x64/runner/Release/
 
       # MSIX installer (self-signed test certificate by default). msix is
       # installed as a global tool so its get_it ^9 requirement never clashes
