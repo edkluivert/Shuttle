@@ -49,8 +49,12 @@ jobs:
       - name: Install msix tool
         run: dart pub global activate msix
 
+      # --install-certificate false: never try to install the test cert into a
+      # trust store (a machine-level, interactive action). On CI that prompt has
+      # no keyboard and crashes the tool; the recipient trusts the cert on their
+      # own machine when installing the .msix.
       - name: Create MSIX installer
-        run: dart pub global run msix:create
+        run: dart pub global run msix:create --install-certificate false
 
       - name: Upload MSIX
         uses: actions/upload-artifact@v4
